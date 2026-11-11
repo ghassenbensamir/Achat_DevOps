@@ -32,10 +32,20 @@ public class ProduitServiceImpl implements IProduitService {
 		return produits;
 	}
 
+	@Override
 	@Transactional
 	public Produit addProduit(Produit p) {
-		produitRepository.save(p);
-		return p;
+		validatePrice(p);
+
+		if (p.getIdProduit() != null &&
+				produitRepository.findById(p.getIdProduit()).orElse(null) != null) {
+			throw new IllegalArgumentException(
+					"Un produit avec le code '" + p.getCodeProduit() + "' existe déjà");
+		}
+
+		validateCategorieExists(p);
+
+		return produitRepository.save(p);
 	}
 
 	
@@ -47,6 +57,8 @@ public class ProduitServiceImpl implements IProduitService {
 
 	@Override
 	public Produit updateProduit(Produit p) {
+		validatePrice(p);
+		validateCategorieExists(p);
 		return produitRepository.save(p);
 	}
 
@@ -59,12 +71,39 @@ public class ProduitServiceImpl implements IProduitService {
 
 	@Override
 	public void assignProduitToStock(Long idProduit, Long idStock) {
-		Produit produit = produitRepository.findById(idProduit).orElse(null);
-		Stock stock = stockRepository.findById(idStock).orElse(null);
+		Produit produit = produitRepository.findById(idProduit)
+				.orElseThrow(() -> new IllegalArgumentException(
+						"Produit introuvable : id=" + idProduit));
+
+		Stock stock = stockRepository.findById(idStock)
+				.orElseThrow(() -> new IllegalArgumentException(
+						"Stock introuvable : id=" + idStock));
+
 		produit.setStock(stock);
 		produitRepository.save(produit);
-
 	}
 
+
+
+    //helpers
+	/** NEW-PROD-01: a negative price is refused (0 is accepted). */
+	private void validatePrice(Produit p) {
+		if (p.getPrix() < 0) {
+			throw new IllegalArgumentException(
+					"Le prix du produit ne peut pas être négatif : " + p.getPrix());
+		}
+	}
+
+	/** NEW-PROD-03: if a category is linked, it must exist. */
+	private void validateCategorieExists(Produit p) {
+		if (p.getCategorieProduit() != null
+				&& p.getCategorieProduit().getIdCategorieProduit() != null
+				&& !categorieProduitRepository.existsById(
+				p.getCategorieProduit().getIdCategorieProduit())) {
+			throw new IllegalArgumentException(
+					"Catégorie introuvable : id="
+							+ p.getCategorieProduit().getIdCategorieProduit());
+		}
+	}
 
 }
