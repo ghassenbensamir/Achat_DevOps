@@ -9,7 +9,7 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
 
 	
 
-	Produit findByCodeProduit(String codeProduit);
+	Boolean existsByCodeProduit(String codeProduit);
 	
 	
 	

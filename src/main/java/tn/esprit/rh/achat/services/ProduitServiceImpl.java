@@ -39,7 +39,7 @@ public class ProduitServiceImpl implements IProduitService {
 		validatePrice(p);
 
 		if (p.getCodeProduit() != null
-				&& produitRepository.findByCodeProduit(p.getCodeProduit())!=null) {
+				&& produitRepository.existsByCodeProduit(p.getCodeProduit())) {
 			throw new IllegalArgumentException(
 					"Un produit avec le code '" + p.getCodeProduit() + "' existe déjà");
 		}
