@@ -189,7 +189,8 @@ class ProduitServiceImplTest {
         produit.setPrix(900f);
         produit.setLibelleProduit("Autre ordinateur");
         produit.setIdProduit(5L);
-        when(produitRepository.findById(5L)).thenReturn(Optional.of(produit));
+        produit.setCodeProduit("2-L");
+        when(produitRepository.findByCodeProduit("2-L")).thenReturn(produit);
 
         assertThrows(IllegalArgumentException.class,
                 () -> produitService.addProduit(produit));
