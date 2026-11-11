@@ -191,7 +191,7 @@ class ProduitServiceImplTest {
         produit.setLibelleProduit("Autre ordinateur");
         produit.setIdProduit(5L);
         produit.setCodeProduit("2-L");
-        when(produitRepository.findByCodeProduit("2-L")).thenReturn(produit);
+        when(produitRepository.existsByCodeProduit("2-L")).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class,
                 () -> produitService.addProduit(produit));
@@ -240,7 +240,7 @@ class ProduitServiceImplTest {
         produit.setCodeProduit("P-001");
         produit.setLibelleProduit("Ordinateur");
         produit.setPrix( 1500f);
-        when(produitRepository.findByCodeProduit("P-001")).thenReturn(null);
+        when(produitRepository.existsByCodeProduit("P-001")).thenReturn(false);
         when(produitRepository.save(produit))
                 .thenThrow(new DataIntegrityViolationException("duplicate key"));
 
