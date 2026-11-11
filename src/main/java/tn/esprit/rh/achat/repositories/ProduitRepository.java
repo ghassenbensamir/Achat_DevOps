@@ -8,10 +8,8 @@ import tn.esprit.rh.achat.entities.Produit;
 public interface ProduitRepository extends JpaRepository<Produit, Long> {
 
 	
-	
-	
-	
-	
+
+	Produit findByCodeProduit(String codeProduit);
 	
 	
 	
