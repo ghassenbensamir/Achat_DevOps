@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import tn.esprit.rh.achat.entities.Produit;
 import tn.esprit.rh.achat.entities.Stock;
 import tn.esprit.rh.achat.repositories.CategorieProduitRepository;
@@ -230,5 +231,20 @@ class ProduitServiceImplTest {
                 () -> produitService.assignProduitToStock(idProduit, idStock));
 
         verify(produitRepository, never()).save(any(Produit.class));
+    }
+
+    @Test
+    @DisplayName("NEW-PROD-02: a DB unique-constraint violation (concurrent insert) is refused")
+    void addProduit_dbUniqueViolation_isRefused() {
+        Produit produit = new Produit();
+        produit.setCodeProduit("P-001");
+        produit.setLibelleProduit("Ordinateur");
+        produit.setPrix( 1500f);
+        when(produitRepository.findByCodeProduit("P-001")).thenReturn(null);
+        when(produitRepository.save(produit))
+                .thenThrow(new DataIntegrityViolationException("duplicate key"));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> produitService.addProduit(produit));
     }
 }
