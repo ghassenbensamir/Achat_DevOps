@@ -2,6 +2,7 @@ package tn.esprit.rh.achat.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import tn.esprit.rh.achat.entities.Produit;
 import tn.esprit.rh.achat.entities.Stock;
@@ -32,8 +33,8 @@ public class ProduitServiceImpl implements IProduitService {
 		return produits;
 	}
 
+	// FR-PROD-01, NEW-PROD-01, NEW-PROD-02, NEW-PROD-03
 	@Override
-	@Transactional
 	public Produit addProduit(Produit p) {
 		validatePrice(p);
 
@@ -45,7 +46,26 @@ public class ProduitServiceImpl implements IProduitService {
 
 		validateCategorieExists(p);
 
-		return produitRepository.save(p);
+		return saveOrRefuseDuplicate(p);
+	}
+
+	// FR-PROD-04, NEW-PROD-01
+	@Override
+	public Produit updateProduit(Produit p) {
+		validatePrice(p);
+		validateCategorieExists(p);
+		return saveOrRefuseDuplicate(p);
+	}
+
+	/** NEW-PROD-02: the DB unique constraint is the final guard against concurrent duplicates. */
+	private Produit saveOrRefuseDuplicate(Produit p) {
+		try {
+			return produitRepository.save(p);
+		} catch (DataIntegrityViolationException e) {
+			throw new IllegalArgumentException(
+					"Impossible d'enregistrer le produit (code '" + p.getCodeProduit()
+							+ "' déjà utilisé ou contrainte d'intégrité violée)", e);
+		}
 	}
 
 	
@@ -55,12 +75,6 @@ public class ProduitServiceImpl implements IProduitService {
 		produitRepository.deleteById(produitId);
 	}
 
-	@Override
-	public Produit updateProduit(Produit p) {
-		validatePrice(p);
-		validateCategorieExists(p);
-		return produitRepository.save(p);
-	}
 
 	@Override
 	public Produit retrieveProduit(Long produitId) {
