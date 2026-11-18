@@ -7,4 +7,5 @@ import tn.esprit.rh.achat.entities.Fournisseur;
 @Repository
 public interface FournisseurRepository extends JpaRepository<Fournisseur, Long> {
 
+    boolean existsFournisseurByCode(String code);
 }
