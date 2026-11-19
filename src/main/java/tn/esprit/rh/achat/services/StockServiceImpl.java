@@ -17,40 +17,45 @@ public class StockServiceImpl implements IStockService {
 	@Autowired
 	StockRepository stockRepository;
 
-
 	@Override
 	public List<Stock> retrieveAllStocks() {
-		// récuperer la date à l'instant t1
 		log.info("In method retrieveAllStocks");
 		List<Stock> stocks = (List<Stock>) stockRepository.findAll();
 		for (Stock stock : stocks) {
 			log.info(" Stock : " + stock);
 		}
 		log.info("out of method retrieveAllStocks");
-		// récuperer la date à l'instant t2
-		// temps execution = t2 - t1
 		return stocks;
 	}
 
 	@Override
 	public Stock addStock(Stock s) {
-		// récuperer la date à l'instant t1
 		log.info("In method addStock");
+		validateQuantities(s);
 		return stockRepository.save(s);
-		
 	}
 
 	@Override
 	public void deleteStock(Long stockId) {
 		log.info("In method deleteStock");
+		Stock stock = stockRepository.findById(stockId).orElse(null);
+		if (stock != null && stock.getProduits() != null && !stock.getProduits().isEmpty()) {
+			throw new IllegalArgumentException("Impossible de supprimer un stock contenant encore des produits.");
+		}
 		stockRepository.deleteById(stockId);
-
 	}
 
 	@Override
 	public Stock updateStock(Stock s) {
 		log.info("In method updateStock");
+		validateQuantities(s);
 		return stockRepository.save(s);
+	}
+
+	private void validateQuantities(Stock s) {
+		if ((s.getQte() != null && s.getQte() < 0) || (s.getQteMin() != null && s.getQteMin() < 0)) {
+			throw new IllegalArgumentException("Les quantités du stock ne peuvent pas être négatives.");
+		}
 	}
 
 	@Override
@@ -59,7 +64,7 @@ public class StockServiceImpl implements IStockService {
 		log.info("In method retrieveStock");
 		Stock stock = stockRepository.findById(stockId).orElse(null);
 		log.info("out of method retrieveStock");
-		 long elapsedTime = System.currentTimeMillis() - start;
+		long elapsedTime = System.currentTimeMillis() - start;
 		log.info("Method execution time: " + elapsedTime + " milliseconds.");
 
 		return stock;
@@ -78,7 +83,6 @@ public class StockServiceImpl implements IStockService {
 					+ stocksEnRouge.get(i).getLibelleStock() + " a une quantité de " + stocksEnRouge.get(i).getQte()
 					+ " inférieur à la quantité minimale a ne pas dépasser de " + stocksEnRouge.get(i).getQteMin()
 					+ newLine;
-
 		}
 		log.info(finalMessage);
 		return finalMessage;
