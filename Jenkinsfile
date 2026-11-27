@@ -19,7 +19,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_OPTS = '-Xmx512m'        // keep Maven small on the 3.6 GiB VM
+        MAVEN_OPTS = '-Xmx512m'        // keep Maven small on the VM
     }
 
     stages {
@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('SonarQube Analysis and Quality Gate') {
-            tools { jdk 'JDK21' }      // overrides JDK8 for this stage only (Sonar scanner needs Java 17+)
+            tools { jdk 'JDK21' }      // Sonar scanner needs Java 17+
             steps {
                 sh 'java -version'
                 withSonarQubeEnv('SonarQube') {
@@ -39,10 +39,26 @@ pipeline {
                     // qualitygate.wait makes the scanner poll SonarQube and fail
                     // the build if the gate fails (no webhook needed).
                     sh '''./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
-                        -Dsonar.projectKey=Achat \
+                        -Dsonar.projectKey=my-project \
                         -Dsonar.java.source=8 \
                         -Dsonar.qualitygate.wait=true \
                         -Dsonar.qualitygate.timeout=300'''
+                }
+            }
+        }
+
+        stage('Publish to Nexus') {
+            // Only publish from main. To test from another branch, temporarily
+            // change the condition (for example: env.GIT_BRANCH == 'origin/ci/your-branch').
+            when {
+                expression { env.GIT_BRANCH == 'origin/main' || env.GIT_BRANCH == 'main' }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'nexus-credentials',
+                                                  usernameVariable: 'NEXUS_USER',
+                                                  passwordVariable: 'NEXUS_PASS')]) {
+                    // Tests already ran in stage 1, so skip them here.
+                    sh './mvnw -B -s ci-settings.xml deploy -DskipTests'
                 }
             }
         }
