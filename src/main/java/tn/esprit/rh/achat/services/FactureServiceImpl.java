@@ -1,6 +1,7 @@
 
 package tn.esprit.rh.achat.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,25 +19,23 @@ import java.util.Set;
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class FactureServiceImpl implements IFactureService {
 
-	@Autowired
-	FactureRepository factureRepository;
 
-	@Autowired
-	OperateurRepository operateurRepository;
+	private final FactureRepository factureRepository;
 
-	@Autowired
-	DetailFactureRepository detailFactureRepository;
+	private final OperateurRepository operateurRepository;
 
-	@Autowired
-	FournisseurRepository fournisseurRepository;
+	private final DetailFactureRepository detailFactureRepository;
 
-	@Autowired
-	ProduitRepository produitRepository;
 
-	@Autowired
-	ReglementServiceImpl reglementService;
+	private final FournisseurRepository fournisseurRepository;
+
+	private final ProduitRepository produitRepository;
+
+
+	private final ReglementServiceImpl reglementService;
 
 
 	// ==================== RETRIEVE ALL FACTURES ====================

@@ -1,5 +1,6 @@
 package tn.esprit.rh.achat.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,14 +16,13 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProduitServiceImpl implements IProduitService {
 
-	@Autowired
-	ProduitRepository produitRepository;
-	@Autowired
-	StockRepository stockRepository;
-	@Autowired
-	CategorieProduitRepository categorieProduitRepository;
+	private final ProduitRepository produitRepository;
+	private final StockRepository stockRepository;
+
+	private final CategorieProduitRepository categorieProduitRepository;
 
 	@Override
 	public List<Produit> retrieveAllProduits() {

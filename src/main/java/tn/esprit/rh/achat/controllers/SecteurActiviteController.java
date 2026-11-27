@@ -1,6 +1,7 @@
 package tn.esprit.rh.achat.controllers;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.rh.achat.entities.SecteurActivite;
@@ -12,10 +13,11 @@ import java.util.List;
 @Api(tags = "Gestion des secteurs activites")
 @RequestMapping("/secteurActivite")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class SecteurActiviteController {
 
-	@Autowired
-	ISecteurActiviteService secteurActiviteService;
+
+	private final ISecteurActiviteService secteurActiviteService;
 	
 	// http://localhost:8089/SpringMVC/secteurActivite/retrieve-all-secteurActivite
 	@GetMapping("/retrieve-all-secteurActivite")
