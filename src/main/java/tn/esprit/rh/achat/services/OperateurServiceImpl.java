@@ -1,5 +1,6 @@
 package tn.esprit.rh.achat.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.rh.achat.entities.Operateur;
@@ -8,10 +9,11 @@ import tn.esprit.rh.achat.repositories.OperateurRepository;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OperateurServiceImpl implements IOperateurService {
 
-	@Autowired
-	OperateurRepository operateurRepository;
+
+	private final OperateurRepository operateurRepository;
 	@Override
 	public List<Operateur> retrieveAllOperateurs() {
 		return (List<Operateur>) operateurRepository.findAll();

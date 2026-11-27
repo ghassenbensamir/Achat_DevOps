@@ -1,6 +1,7 @@
 package tn.esprit.rh.achat.controllers;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,11 @@ import java.util.List;
 @Api(tags = "Gestion des factures")
 @RequestMapping("/facture")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class FactureRestController {
 
-    @Autowired
-    IFactureService factureService;
+
+   private final IFactureService factureService;
 
     // http://localhost:8089/SpringMVC/facture/retrieve-all-factures
     @GetMapping("/retrieve-all-factures")

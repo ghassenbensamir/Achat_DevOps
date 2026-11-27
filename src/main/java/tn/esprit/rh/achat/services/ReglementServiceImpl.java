@@ -1,6 +1,7 @@
 
 package tn.esprit.rh.achat.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,12 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ReglementServiceImpl implements IReglementService {
 
-	@Autowired
-	FactureRepository factureRepository;
+	private final FactureRepository factureRepository;
 
-	@Autowired
-	ReglementRepository reglementRepository;
+	private final ReglementRepository reglementRepository;
 
 
 	// ==================== RETRIEVE ALL REGLEMENTS ====================

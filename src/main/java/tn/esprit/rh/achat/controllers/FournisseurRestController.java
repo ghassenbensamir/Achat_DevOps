@@ -1,6 +1,7 @@
 package tn.esprit.rh.achat.controllers;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.rh.achat.entities.Fournisseur;
@@ -12,10 +13,10 @@ import java.util.List;
 @RestController
 @Api(tags = "Gestion des fournisseurss")
 @RequestMapping("/fournisseur")
+@RequiredArgsConstructor
 public class FournisseurRestController {
 
-	@Autowired
-	IFournisseurService fournisseurService;
+	private final IFournisseurService fournisseurService;
 
 	// http://localhost:8089/SpringMVC/fournisseur/retrieve-all-fournisseurs
 	@GetMapping("/retrieve-all-fournisseurs")

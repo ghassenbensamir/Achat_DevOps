@@ -2,6 +2,7 @@ package tn.esprit.rh.achat.controllers;
 
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.rh.achat.entities.Stock;
@@ -13,10 +14,11 @@ import java.util.List;
 @Api(tags = "Gestion des stocks")
 @RequestMapping("/stock")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class StockRestController {
 
-	@Autowired
-	IStockService stockService;
+
+	private final IStockService stockService;
 
 	// http://localhost:8089/SpringMVC/stock/retrieve-all-stocks
 	@GetMapping("/retrieve-all-stocks")

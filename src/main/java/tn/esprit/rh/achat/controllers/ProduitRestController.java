@@ -1,6 +1,7 @@
 package tn.esprit.rh.achat.controllers;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.rh.achat.entities.Produit;
@@ -13,10 +14,11 @@ import java.util.List;
 @CrossOrigin("*")
 @Api(tags = "Gestion des produits")
 @RequestMapping("/produit")
+@RequiredArgsConstructor
 public class  ProduitRestController {
 
-	@Autowired
-	IProduitService produitService;
+
+	private final IProduitService produitService;
 
 	// http://localhost:8089/SpringMVC/produit/retrieve-all-produits
 	@GetMapping("/retrieve-all-produits")
