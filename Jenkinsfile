@@ -39,7 +39,7 @@ pipeline {
                     // qualitygate.wait makes the scanner poll SonarQube and fail
                     // the build if the gate fails (no webhook needed).
                     sh '''./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
-                        -Dsonar.projectKey=my-project \
+                        -Dsonar.projectKey=achat \
                         -Dsonar.java.source=8 \
                         -Dsonar.qualitygate.wait=true \
                         -Dsonar.qualitygate.timeout=300'''
